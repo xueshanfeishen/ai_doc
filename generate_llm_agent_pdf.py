@@ -26,15 +26,15 @@ class ChinesePDF(FPDF):
         bold_font_path = r"C:\Windows\Fonts\Dengb.ttf"
         light_font_path = r"C:\Windows\Fonts\Dengl.ttf"
 
-        self.add_font("Deng", "", font_path, uni=True)
+        self.add_font("Deng", "", font_path)
         if os.path.exists(bold_font_path):
-            self.add_font("Deng", "B", bold_font_path, uni=True)
+            self.add_font("Deng", "B", bold_font_path)
         else:
-            self.add_font("Deng", "B", font_path, uni=True)
+            self.add_font("Deng", "B", font_path)
         if os.path.exists(light_font_path):
-            self.add_font("Deng", "I", light_font_path, uni=True)
+            self.add_font("Deng", "I", light_font_path)
         else:
-            self.add_font("Deng", "I", font_path, uni=True)
+            self.add_font("Deng", "I", font_path)
 
     def header(self):
         if self.page_no() > 1:
@@ -82,7 +82,10 @@ class ChinesePDF(FPDF):
         self.set_text_color(50, 50, 50)
         if indent > 0:
             self.set_x(10 + indent)
+        else:
+            self.set_x(self.l_margin)
         self.multi_cell(0, 6, text)
+        self.set_x(self.l_margin)
         self.ln(1)
         self.set_text_color(0, 0, 0)
 
@@ -91,7 +94,9 @@ class ChinesePDF(FPDF):
         self.ln(2)
         self.set_font("Deng", "B", 10.5)
         self.set_text_color(180, 50, 50)
+        self.set_x(self.l_margin)
         self.multi_cell(0, 6, f"Q{num}: {text}")
+        self.set_x(self.l_margin)
         self.ln(1)
         self.set_text_color(0, 0, 0)
 
@@ -101,6 +106,7 @@ class ChinesePDF(FPDF):
         self.set_text_color(60, 60, 60)
         self.set_x(12)
         self.multi_cell(0, 5.5, text)
+        self.set_x(self.l_margin)
         self.ln(2)
         self.set_text_color(0, 0, 0)
 
@@ -110,6 +116,7 @@ class ChinesePDF(FPDF):
         self.set_text_color(40, 40, 40)
         self.set_x(12)
         self.multi_cell(0, 5.5, f"  - {text}")
+        self.set_x(self.l_margin)
         self.set_text_color(0, 0, 0)
 
     def cover_page(self):
@@ -1488,7 +1495,9 @@ def generate_pdf():
     pdf.cell(0, 6, "--- 文档结束 ---", align="C", new_x="LMARGIN", new_y="NEXT")
 
     # 保存PDF
-    output_path = r"C:\Users\Administrator\Desktop\大模型与Agent开发_概念及面试题集.pdf"
+    # 输出到当前脚本所在目录
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_path = os.path.join(script_dir, "大模型与Agent开发_概念及面试题集.pdf")
     pdf.output(output_path)
     print(f"PDF 已生成: {output_path}")
     return output_path
